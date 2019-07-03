@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sesami Project</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="/assets/main.css" />
+  </head>
+  <body>
+    <!--Login button-->
+    <button id="authorize_button" style="display: block;" class="button">
+      Login
+    </button>
+    <!------------------------>
+
+    <!--add event and newly created events go here-->
+    <div id="new_event_container" class="outer_container">
+      <h2>New Events</h2>
+
+      <!--button to toggle visibility of new event inputs-->
+      <button
+        id="add_event_button"
+        style="display: none;"
+        onClick="revealForm()"
+        class="button"
+      >
+        +New
+      </button>
+
+      <!--container for new event inputs-->
+      <div
+        id="new_event_form_container"
+        style="display: none;"
+        class="outer_container"
+      >
+        <!--Title input-->
+        <input
+          class="inner_container"
+          type="text"
+          id="newEventTitle"
+          name="Title"
+          placeholder="Title"
+        />
+
+        <!--description input-->
+        <textarea
+          rows="20"
+          cols="20"
+          id="newEventDescription"
+          class="inner_container  input_description"
+          placeholder="Description"
+        ></textarea>
+
+        <!--from input-->
+        <input
+          class="inner_container"
+          type="text"
+          id="newEventStart"
+          name="From"
+          placeholder="From: YYYY/MM/DDT00:00:00"
+        />
+
+        <!--to input-->
+        <input
+          class="inner_container"
+          type="text"
+          id="newEventEnd"
+          name="To"
+          placeholder="To: YYYY/MM/DDT00:00:00"
+        />
+        <!--button to save the event to google calendar-->
+        <button onClick="handleAddEventClick()" class="button">Save</button>
+      </div>
+      <!--end of container for new event inputs-->
+    </div>
+    <!--end of edd events and newly created events-->
+    <div id="event_container" class="outer_container"><h2>Events</h2></div>
+
+    <!--script that controls adding and viewing events-->
+    <script type="text/javascript" src="assets/Js/calendar.js"></script>
+    <!--googles api script-->
+    <script
+      async
+      defer
+      src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()"
+    ></script>
+  </body>
+</html>

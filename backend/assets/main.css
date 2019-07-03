@@ -1,0 +1,55 @@
+.body {
+  align-content: center;
+}
+.outer_container {
+  margin: auto;
+  width: 500px;
+  background-color: beige;
+}
+.button {
+  background-color: rgb(121, 173, 207);
+  border-radius: 5px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-style: none;
+  margin: 5px;
+}
+.inner_container {
+  border-style: none;
+  padding: 5px;
+  margin: 5px;
+  background-color: rgb(162, 191, 211);
+  border-radius: 5px;
+  min-width: 200px;
+}
+.event_container {
+  background-color: rgb(200, 209, 214);
+  margin: 5px;
+  padding: 5px;
+  padding-left: 40px;
+  padding-right: 40px;
+  border-radius: 5px;
+}
+.sesami_event_container {
+  background-color: rgb(130, 175, 206);
+  margin: 5px;
+  padding: 5px;
+  padding-left: 40px;
+  padding-right: 40px;
+  border-radius: 5px;
+}
+.event_title {
+  font-size: 16px;
+}
+.event_date {
+  font-size: 12px;
+}
+.event_description {
+  font-size: 12px;
+}
+.input_description {
+  width: 300px;
+  height: 200px;
+  overflow: wrap;
+}
