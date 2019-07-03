@@ -25,6 +25,13 @@ listUpcomingEvents - function - gets events from google calendar API and calls a
 handleAddEventClick - function - when the "Save" button in the +Event section is clicked, trigger the
                                  request to add a new event and add that event to the new event container
                                  once it has been added
+handleSaveEditEvent - function - triggers by the "Save" button on an edit, it sends a request to google
+                                 to edit the specific event to contain the info in the corresponsing input
+                                 fields
+handleEditClick - function - triggered by clicking on the edit button of an event. it creates the input
+                             fields needed to edit the event.  
+                             |_TO_ADD_| default value of the fields are the current values of the title
+                             description, start and end times.
 ------------------------------------------------------------------------------------------------------
 */
 
@@ -126,10 +133,12 @@ let appendEvent = (event, isNew) => {
     eventContainer = document.getElementById("new_event_container");
   }
   let div = document.createElement("div");
+  div.id = "event_container_" + event.id;
 
   let heading = document.createElement("h3");
   let headingText = document.createTextNode(event.summary);
   heading.appendChild(headingText);
+
   let fromTo = document.createElement("p");
   let fromToText = document.createTextNode(
     "Start Time: " +
@@ -138,13 +147,22 @@ let appendEvent = (event, isNew) => {
       formatTime(event.end.dateTime)
   );
   fromTo.appendChild(fromToText);
+
   let description = document.createElement("p");
   let descriptionText = document.createTextNode(event.description);
   description.appendChild(descriptionText);
 
+  let editButton = document.createElement("button");
+  let editButtonText = document.createTextNode("Edit");
+  editButton.appendChild(editButtonText);
+  editButton.onclick = handleEditClick;
+  editButton.className = "button";
+  editButton.id = "edit_button_" + event.id;
+
   div.appendChild(heading);
   div.appendChild(fromTo);
   div.appendChild(description);
+  div.appendChild(editButton);
 
   eventContainer.appendChild(div);
 
@@ -200,7 +218,7 @@ const handleAddEventClick = () => {
   let newEventStart = document.getElementById("newEventStart").value;
   let newEventEnd = document.getElementById("newEventEnd").value;
 
-  var event = {
+  let event = {
     summary: newEventTitle,
     location: "online",
     description: newEventDescription + " -event created by sesami-",
@@ -227,5 +245,120 @@ const handleAddEventClick = () => {
     // adds the event to the list of new events
     appendEvent(event, true);
   });
+};
+
+// triggers when the save button of a edit_event_container is clicked
+// edit event containers and the related save button are created in handle edit click
+handleSaveEditEvent = event => {
+  let eventId = event.target.id.split("_")[3];
+
+  let newEventTitle = document.getElementById("edit_event_title_" + eventId)
+    .value;
+  let newEventDescription = document.getElementById(
+    "edit_event_description_" + eventId
+  ).value;
+  let newEventStart = document.getElementById("edit_event_from_" + eventId)
+    .value;
+  let newEventEnd = document.getElementById("edit_event_to_" + eventId).value;
+  console.log(newEventEnd);
+
+  let eventData = {
+    summary: newEventTitle,
+    location: "online",
+    description: newEventDescription + " -event created by sesami-",
+    start: {
+      dateTime: newEventStart + "-04:00"
+    },
+    end: {
+      dateTime: newEventEnd + "-04:00"
+    },
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: "email", minutes: 24 * 60 },
+        { method: "popup", minutes: 10 }
+      ]
+    }
+  };
+  let request = gapi.client.calendar.events.patch({
+    calendarId: "primary",
+    eventId: eventId,
+    resource: eventData
+  });
+  request.execute(event => {
+    // adds the event to the list of new events
+    let specificEventContainer = document.getElementById(
+      "event_container_" + eventId
+    );
+    let eventContainer = document.getElementById("event_container");
+    eventContainer.removeChild(specificEventContainer);
+    appendEvent(event, true);
+    console.log(event);
+  });
+};
+//----------------------------------------------------------------------------
+handleEditClick = event => {
+  let eventId = event.target.id.split("_")[2]; // the id is edit_button_GOOGLEeventID so this gets the id
+  let eventContainer = document.getElementById("event_container_" + eventId);
+
+  if (event.target.innerText === "Cancel") {
+    event.target.innerText = "Edit";
+    let editFieldsDiv = document.getElementById(
+      "edit_event_container_" + eventId
+    );
+    console.log(editFieldsDiv);
+    eventContainer.removeChild(editFieldsDiv);
+    return;
+  }
+
+  event.target.innerText = "Cancel";
+
+  let div = document.createElement("div");
+  div.id = "edit_event_container_" + eventId;
+  div.className = "edit_event_container";
+
+  let titleField = document.createElement("input");
+  titleField.type = "text";
+  titleField.name = "Title";
+  titleField.placeholder = "Title";
+  titleField.className = "inner_container";
+  titleField.id = "edit_event_title_" + eventId;
+
+  let descField = document.createElement("textarea");
+  descField.rows = "20";
+  descField.cols = "20";
+  descField.type = "text";
+  descField.name = "Description";
+  descField.placeholder = "Description";
+  descField.className = "inner_container input_description";
+  descField.id = "edit_event_description_" + eventId;
+
+  let startField = document.createElement("input");
+  startField.type = "text";
+  startField.name = "From";
+  startField.placeholder = "From: YYYY-MM-DDT00:00:00";
+  startField.className = "inner_container";
+  startField.id = "edit_event_from_" + eventId;
+
+  let endField = document.createElement("input");
+  endField.type = "text";
+  endField.name = "To";
+  endField.placeholder = "To: YYYY-MM-DDT00:00:00";
+  endField.className = "inner_container";
+  endField.id = "edit_event_to_" + eventId;
+
+  let saveButton = document.createElement("button");
+  saveButton.onclick = handleSaveEditEvent;
+  saveButton.className = "button";
+  saveButton.id = "edit_event_button_" + eventId;
+  saveButton.innerText = "Save";
+
+  div.appendChild(titleField);
+  div.appendChild(descField);
+  div.appendChild(startField);
+  div.appendChild(endField);
+  div.appendChild(saveButton);
+
+  eventContainer.appendChild(div);
 };
 //___________________________________________________________________________________________
