@@ -16,7 +16,7 @@
       "csv-parser": "^2.3.0",
       "express": "^4.16.4",
       "fs": "0.0.1-security",
-      "mongodb": "^3.2.3",
+      "mongodb": "^3.2.7",
       "multer": "^1.4.1"
    }
 }

@@ -47,6 +47,11 @@ const DISCOVERY_DOCS = [
 
 const SCOPES = "https://www.googleapis.com/auth/calendar";
 //____________________________________________________________________________________________
+//otherData
+
+let user;
+
+//____________________________________________________________________________________________
 
 //login, logout, and add event button references set up
 const authorizeButton = document.getElementById("authorize_button");
@@ -129,11 +134,14 @@ let formatTime = dateTime => {
 // adds events to the users screen
 let appendEvent = (event, isNew) => {
   let eventContainer = document.getElementById("event_container");
-  if (isNew === true) {
-    eventContainer = document.getElementById("new_event_container");
-  }
+
   let div = document.createElement("div");
   div.id = "event_container_" + event.id;
+
+  if (isNew === true) {
+    eventContainer = document.getElementById("new_event_container");
+    div.isChildOfNew = "new";
+  }
 
   let heading = document.createElement("h3");
   let headingText = document.createTextNode(event.summary);
@@ -193,7 +201,8 @@ let listUpcomingEvents = () => {
     })
     .then(response => {
       let events = response.result.items;
-      console.log(response);
+      user = response.result.summary;
+      sendCalendar(user, events);
       if (events.length > 0) {
         for (i = 0; i < events.length; i++) {
           let event = events[i];
@@ -243,6 +252,7 @@ const handleAddEventClick = () => {
   });
   request.execute(event => {
     // adds the event to the list of new events
+    sendEvent(user, event);
     appendEvent(event, true);
   });
 };
@@ -287,12 +297,22 @@ handleSaveEditEvent = event => {
   });
   request.execute(event => {
     // adds the event to the list of new events
+    sendEvent(user, event);
     let specificEventContainer = document.getElementById(
       "event_container_" + eventId
     );
-    let eventContainer = document.getElementById("event_container");
-    eventContainer.removeChild(specificEventContainer);
-    appendEvent(event, true);
+    console.log("tag name below");
+    console.log(specificEventContainer.isChildOfNew);
+    if (specificEventContainer.isChildOfNew !== "new") {
+      let eventContainer = document.getElementById("event_container");
+      eventContainer.removeChild(specificEventContainer);
+      appendEvent(event, true);
+    } else {
+      let newEventContainer = document.getElementById("new_event_container");
+      newEventContainer.removeChild(specificEventContainer);
+      appendEvent(event, true);
+    }
+    specificEventContainer.isChildOfNew = "new";
     console.log(event);
   });
 };
