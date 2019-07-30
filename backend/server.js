@@ -10,7 +10,7 @@ const MongoClient = require("mongodb").MongoClient;
 
 //_____________________MOGODB Setup___________________
 let dataBaseUrl =
-  "mongodb+srv://kenton:Blackfire1!@cluster0-qdmfh.mongodb.net/test?retryWrites=true&w=majority";
+  "mongodb+srv://kenton:_________@cluster0-qdmfh.mongodb.net/test?retryWrites=true&w=majority";
 
 let projectDB;
 let usersCollection;
